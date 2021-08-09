@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hugo95.hugoboard.board.boardMapper">
+
+	<select id="getBoardList" resultType="com.hugo95.hugoboard.board.model.BoardVO">
+		SELECT bid
+		, cate_cd
+		, title
+		, content
+		, tag
+		, view_cnt
+		, reg_id
+		, reg_dt
+		,
+		mod_id
+		, mod_dt
+		FROM tbl_board
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="searchType=='title' and keyword != null and keyword != '' ">
+				AND TITLE like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType=='content' and keyword != null and keyword != '' ">
+				AND CONTENT like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType=='reg_id' and keyword != null and keyword != '' ">
+				AND reg_id like CONCAT('%', #{keyword}, '%')
+			</if>
+		</trim>
+
+		LIMIT #{startList}, #{listSize}
+	</select>
+
+	<select id="getBoardListCnt" resultType="int">
+		SELECT count(*) as listCnt
+		FROM tbl_board
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+      <if test="searchType=='title' and keyword != null and keyword != '' ">
+        AND TITLE like CONCAT('%', #{keyword}, '%')
+      </if>
+      <if test="searchType=='content' and keyword != null and keyword != '' ">
+        AND CONTENT like CONCAT('%', #{keyword}, '%')
+      </if>
+      <if test="searchType=='reg_id' and keyword != null and keyword != '' ">
+        AND reg_id like CONCAT('%', #{keyword}, '%')
+      </if>
+    </trim>
+	</select>
+
+	<select id="getBoardContent"
+		resultType="com.hugo95.hugoboard.board.model.BoardVO"
+		parameterType="com.hugo95.hugoboard.board.model.BoardVO">
+		SELECT bid
+		, cate_cd
+		, title
+		, content
+		, tag
+		, view_cnt
+		,
+		reg_id
+		, reg_dt
+		, mod_id
+		, mod_dt
+		FROM tbl_board
+		WHERE bid = #{bid}
+	</select>
+
+	<insert id="insertBoard"
+		parameterType="com.hugo95.hugoboard.board.model.BoardVO">
+		INSERT INTO tbl_board
+		( cate_cd,
+		title,
+		content,
+		tag,
+		view_cnt,
+		reg_id,
+		reg_dt,
+		mod_id,
+		mod_dt)
+		VALUES
+		( #{cate_cd},
+		#{title},
+		#{content},
+		#{tag},
+		#{view_cnt},
+		#{reg_id},
+		now(),
+		#{mod_id},
+		#{mod_dt})
+	</insert>
+
+	<update id="updateBoard"
+		parameterType="com.hugo95.hugoboard.board.model.BoardVO">
+		UPDATE TBL_BOARD SET
+		cate_cd = #{cate_cd}
+		, title = #{title}
+		, content = #{content}
+		, tag = #{tag}
+		, mod_id = #{mod_id}
+		, mod_dt = now()
+		WHERE
+		bid = ${bid}
+	</update>
+
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM TBL_BOARD
+		WHERE bid = #{bid}
+	</delete>
+
+	<update id="updateViewCnt"
+		parameterType="com.hugo95.hugoboard.board.model.BoardVO">
+		UPDATE TBL_BOARD SET
+		view_cnt = view_cnt + 1
+		WHERE
+		bid = #{bid}
+	</update>
+</mapper>

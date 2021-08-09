@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hugo95.hugoboard.user.userMapper">
+	<select id="getUserInfo" resultType="com.hugo95.hugoboard.user.model.UserVO">
+		SELECT 
+		    uid , name , pwd , email , grade , reg_dt 
+		  FROM tbl_user WHERE uid = #{uid}
+	</select>
+	
+	<select id="getUserList" resultType="com.hugo95.hugoboard.user.model.UserVO"> 
+	  SELECT 
+	      uid , name , pwd , email , grade , reg_dt 
+	    FROM tbl_user
+	</select>
+	
+	<insert id="insertUser" parameterType="com.hugo95.hugoboard.user.model.UserVO"> 
+	  INSERT INTO tbl_user 
+	    (uid, name, pwd, email, reg_dt)
+		VALUES 
+		  ( #{uid} , #{name} , #{pwd} , #{email} , now() )
+	</insert>
+	
+	<update id="updateUser" parameterType="com.hugo95.hugoboard.user.model.UserVO"> 
+	  UPDATE tbl_user SET 
+	    name = #{name} , 
+	    pwd  = #{pwd} ,
+		  email = #{email} , 
+		  grade = #{grade} 
+		 WHERE uid = #{uid}		  
+	</update>
+	
+	<delete id="deleteUser" parameterType="int"> 
+	  DELETE FROM tbl_user
+		 WHERE uid = #{uid}
+	</delete>
+</mapper>
